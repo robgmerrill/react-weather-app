@@ -68,7 +68,7 @@ class App extends Component {
         </Navbar>
         <Grid>
           <Row>
-            <Col md={4} sm={4}>
+            <Col md={6} sm={6}>
               <h3>Select a city</h3>
               <Nav
                 bsStyle="pills"
@@ -83,7 +83,7 @@ class App extends Component {
                 ))}
               </Nav>
             </Col>
-            <Col md={8} sm={8}>
+            <Col md={6} sm={6}>
               <WeatherDisplay key={activePlace} zip={places[activePlace].zip} />
             </Col>
           </Row>
