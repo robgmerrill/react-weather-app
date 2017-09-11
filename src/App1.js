@@ -2,13 +2,12 @@ import React, { Component } from 'react';
 // import "bootstrap/dist/css/bootstrap.css";
 import "bootswatch/journal/bootstrap.css";
 import { Navbar, NavItem, Nav, Grid, Row, Col } from "react-bootstrap";
-import "./index.css"
 
 const places = [
-  { name: "Princess Leia", zip: "https://swapi.co/api/people/5/", img: "https://dl.dropbox.com/s/z6sct1dgb1l9lea/princess_leia.jpg?dl=0" },
-  { name: "Luke Skywalker", zip: "https://swapi.co/api/people/1/", img: "https://dl.dropbox.com/s/4swbg9av5tm8oc1/luke_skywalker.jpg?dl=0"},
-  { name: "Darth Vadar", zip: "https://swapi.co/api/people/4/", img: "https://dl.dropbox.com/s/hnc3pacm44vyb2j/darth_vadar.jpg?dl=0" },
-  { name: "R2D2", zip: "https://swapi.co/api/people/3/", img: "https://dl.dropbox.com/s/0vpfrt5sp040s2u/r2d2.jpg?dl=0" }
+  { name: "Palo Alto", zip: "94308" },
+  { name: "Stockton", zip: "95209" },
+  { name: "Lodi", zip: "95242" },
+  { name: "Seattle", zip: "98119" }
 ]
 
 // create new Componentclass WeatherDisplay
@@ -20,7 +19,10 @@ class WeatherDisplay extends Component {
     };
   }
   componentDidMount() {
-    const URL = this.props.zip;
+    const zip = this.props.zip;
+    const URL = "http://api.openweathermap.org/data/2.5/weather?q=" +
+      zip +
+      "&appid=b1b35bba8b434a28a0be2a3e1071ae5b&units=imperial";
     fetch(URL).then(res => res.json()).then(json => {
       this.setState({ weatherData: json });
     });
@@ -28,15 +30,18 @@ class WeatherDisplay extends Component {
   render() {
     const weatherData = this.state.weatherData;
     if (!weatherData) return <div>Loading</div>;
-    const weather = weatherData.name[0];
-    // const iconUrl = <img src={places.img}/>;
+    const weather = weatherData.weather[0];
+    const iconUrl = "http://openweathermap.org/img/w/" + weather.icon + ".png";
     return (
       <div>
         <h1>
-          {weatherData.name}
+          {weather.main} in {weatherData.name}
+          <img src={iconUrl} alt={weatherData.description} />
         </h1>
-        <p>Name: {weatherData.name}</p>
-        <p>Eye Color: {weatherData.eye_color}</p>
+        <p>Current: {weatherData.main.temp}°</p>
+        <p>High: {weatherData.main.temp_max}°</p>
+        <p>Low: {weatherData.main.temp_min}°</p>
+        <p>Wind Speed: {weatherData.wind.speed} mi/hr</p>
       </div>
     );
   }
@@ -57,14 +62,14 @@ class App extends Component {
         <Navbar>
           <Navbar.Header>
             <Navbar.Brand>
-              React App
+              React Simple Weather App
             </Navbar.Brand>
           </Navbar.Header>
         </Navbar>
         <Grid>
           <Row>
             <Col md={6} sm={6}>
-              <h3>Characters</h3>
+              <h3>Select a city</h3>
               <Nav
                 bsStyle="pills"
                 stacked
@@ -74,7 +79,7 @@ class App extends Component {
                 }}
               >
                 {places.map((place, index) => (
-                  <NavItem key={index} eventKey={index}><img src={place.img}/>{place.name}</NavItem>
+                  <NavItem key={index} eventKey={index}>{place.name}</NavItem>
                 ))}
               </Nav>
             </Col>
